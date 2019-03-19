@@ -210,7 +210,7 @@ export default {
     lineMouseOver (data, index) {
       this.lineList.splice(index, 1, {
         ...data,
-        color: 'yellow'
+        color: 'orange'
       })
       //data.color = 'yellow'
     },

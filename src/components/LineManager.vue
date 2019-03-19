@@ -69,13 +69,13 @@ export default {
     mapMouseDown (e) {
       // console.log(e)
       this.down = true
-      if (this.manager) {
+      if (this.manager && this.isClear) {
         this.manager.clearLine(e.pixel, this.clearWidth)
       }
     },
     mapMouseMove (e) {
       // console.log(e)
-      if (this.down && this.manager) {
+      if (this.down && this.manager && this.isClear) {
         this.manager.clearLine(e.pixel, this.clearWidth)
       }
     },
