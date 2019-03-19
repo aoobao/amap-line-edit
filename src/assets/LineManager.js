@@ -29,6 +29,7 @@ export default class LineManager {
     this._pointSize = opt.pointSize || 3
     this._pointColor = opt.pointColor || this._color
     this._lastPointColor = opt.lastPointColor || 'red'
+    this._lastPointSize = opt.lastPointSize || this._pointSize
 
     // this._status = LineManager.STATUS.VIEW // 默认查看模式
 
@@ -108,13 +109,34 @@ export default class LineManager {
       let pixel = pixels[pixels.length - 1] // 最后一个点
       ctx.fillStyle = this._lastPointColor
       ctx.beginPath()
-      ctx.arc(pixel.getX(), pixel.getY(), this._pointSize, 0, 2 * Math.PI)
+      ctx.arc(pixel.getX(), pixel.getY(), this._lastPointSize, 0, 2 * Math.PI)
       ctx.fill()
 
 
     });
 
     ctx.restore()
+  }
+
+  // 生成线段
+  createLine(list) {
+    return new Promise(resolve => {
+      let canvas = document.createElement('canvas')
+      canvas.width = this._width
+      canvas.height = this._height
+      let ctx = canvas.getContext('2d')
+      ctx.strokeStyle = '#000'
+      ctx.lineWidth = 2
+      ctx.beginPath()
+      for (let i = 0; i < list.length; i++) {
+        const point = list[i];
+        let pixel = this._map.lngLatToContainer(point)
+        ctx.lineTo(pixel.getX(), pixel.getY())
+      }
+      ctx.stroke()
+      let dataUrl = canvas.toDataURL('image/png', 1.0)
+      resolve(dataUrl)
+    })
   }
 
   getLineList() {

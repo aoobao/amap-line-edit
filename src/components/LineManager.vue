@@ -43,7 +43,8 @@ export default {
     this.map.on('mousemove', this.mapMouseMove, this)
     this.manager = new LineManager(this.map, {
       color: 'blue',
-      pointSize: 3
+      pointSize: 3,
+      lastPointSize: 6
     })
     if (this.data.length > 0) {
       this.manager.setData(this.data)
@@ -108,6 +109,16 @@ export default {
       } else {
         return []
       }
+    },
+    createLine (list) {
+      return new Promise(resolve => {
+        if (this.manager) {
+          this.manager.createLine(list).then(base64 => {
+            resolve(base64)
+          })
+        }
+      })
+
     }
   },
   watch: {

@@ -26,7 +26,7 @@
       </div>
     </div>
     <AddDialog ref="addDialog" @add="addLine" />
-    <TransferDialog ref="transferDialog" :dataList="generateData" @merge="mergeLine" />
+    <TransferDialog ref="transferDialog" :dataList="generateData" :base64="imgBase64" @close="imgBase64 = null" @merge="mergeLine" @createImage="createImageLine" />
     <RemarkDialog ref="remarkDialog" :value="remark" @close="remark = null" />
   </div>
 </template>
@@ -60,7 +60,8 @@ export default {
       clearNumberList: [10, 15, 20, 30, 40, 50],
       clearNumber: 20,
       mergeList: [],
-      remark: null
+      remark: null,
+      imgBase64: null
     }
   },
   computed: {
@@ -126,16 +127,30 @@ export default {
       }
       this.status = clear ? LineManager.VIEW : LineManager.CLEAR
     },
-    mergeLine (obj) {
-      // console.log(obj, '合并线段')
-
+    createImageLine (obj) {
+      this.imgBase64 = null
       let data = obj.data
       if (data.length == 0) return
       let list = data.map(item => {
         let obj = this.lineList.find(t => t.id == item.key)
         return obj
       })
-      console.log(list)
+      // 合并后的线段
+      let mlist = list.reduce((pre, sur) => {
+        return [...pre, ...sur.line]
+      }, [])
+      this.$refs.lineManager.createLine(mlist).then(base64 => {
+        this.imgBase64 = base64
+      })
+    },
+    mergeLine (obj) {
+      let data = obj.data
+      if (data.length == 0) return
+      let list = data.map(item => {
+        let obj = this.lineList.find(t => t.id == item.key)
+        return obj
+      })
+      // console.log(list)
 
       let name = list.reduce((pre, sur) => {
         let name = pre + ',' + sur.name
@@ -226,9 +241,8 @@ export default {
   height: 100vh;
   display: flex;
   .map-container {
-    width: 540px;
     height: 100%;
-    flex-shrink: 0;
+    width: 100%;
     position: relative;
     .map {
       width: 100%;
@@ -237,7 +251,8 @@ export default {
   }
 
   .control {
-    width: 100%;
+    flex-shrink: 0;
+    width: 400px;
     height: 100%;
     display: flex;
     flex-flow: column nowrap;

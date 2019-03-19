@@ -59,7 +59,7 @@ export default {
 
 <style lang="scss" scoped>
 .line-container {
-  width: 300px;
+  width: 400px;
   height: 30px;
   display: flex;
   justify-content: flex-start;
@@ -68,6 +68,7 @@ export default {
   margin-top: 10px;
   .name {
     // color: #fff;
+
     margin-left: 10px;
     margin-right: 10px;
   }
