@@ -87,17 +87,18 @@ export default {
 <style lang="scss" scoped>
 .select-container {
   width: 50%;
-  height: 150px;
+  height: 200px;
   background-color: aqua;
   text-align: left;
   float: left;
 }
 .image-container {
   width: 50%;
-  height: 150px;
+  height: 200px;
   float: left;
   //overflow: auto;
-  background-size: contain;
+  // background-size: contain;
+  background-size: 100% 100%;
   background-repeat: no-repeat;
 }
 

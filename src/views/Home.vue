@@ -8,13 +8,14 @@
     <div class="control">
       <div class="button-control">
         <label>{{statusName}}</label>
-        <el-button style="margin-left:15px;" type="primary" @click="showAdd">新增</el-button>
-        <el-button style="margin-left:15px;" type="warning" @click="clearModel">擦除</el-button>
-        <el-button style="margin-left:15px;" type="success" @click="merge">合并</el-button>
+        <el-button style="margin-left:5px;" type="primary" @click="showAdd">新增</el-button>
+        <el-button style="margin-left:5px;" type="warning" @click="clearModel">{{statusName == '擦除' ? '取消擦除' : '擦除'}}</el-button>
+        <el-button style="margin-left:5px;" type="success" @click="merge">合并</el-button>
+        <el-button style="margin-left:5px;" @click="exportAll">{{exportVisible ? '关闭导出' : '批量导出'}}</el-button>
       </div>
       <div class="line-control">
         <template v-if="statusName == '查看'">
-          <LineView v-for="(line,index) in lineList" :key="line.id" :data="line" @remove="removeLine(index)" @reverse="reverseLine(line,index)" @mouseout="lineMouseOut(line,index)" @mouseover="lineMouseOver(line,index)" @copyLine="copyLine(line)" />
+          <LineView v-for="(line,index) in lineList" :key="line.id" :data="line" @remove="removeLine(index)" @reverse="reverseLine(line,index)" @mouseout="lineMouseOut(line,index)" @mouseover="lineMouseOver(line,index)" @copyLine="copyLine(line)" @input="e=>line.name = e" />
         </template>
         <template v-else-if="statusName == '擦除'">
           <div class="clear-container">
@@ -28,19 +29,22 @@
     <AddDialog ref="addDialog" @add="addLine" />
     <TransferDialog ref="transferDialog" :dataList="generateData" :base64="imgBase64" @close="imgBase64 = null" @merge="mergeLine" @createImage="createImageLine" />
     <RemarkDialog ref="remarkDialog" :value="remark" @close="remark = null" />
+    <ExportDialog :visible="exportVisible" :lineList="lineList" @exportLine="exportLine" />
   </div>
 </template>
 
 <script>
 let __id = 0
-// import HANG_ZHOU from '../assets/HANGZHOU'
+import HANG_ZHOU from '../assets/HANGZHOU'
 import AddDialog from '@/components/AddDialog'
 import RemarkDialog from '@/components/RemarkDialog'
 import TransferDialog from '@/components/TransferDialog'
 import LineView from '@/components/LineView'
 import LineManagerView from '@/components/LineManager'
+import ExportDialog from '@/components/ExportDialog.vue'
 import LineManager from '@/assets/LineManager'
 import { transposePolyrect, LineToString } from '../assets/utils'
+const ACTIVE_COLOR = 'red'
 export default {
   name: 'home',
   components: {
@@ -48,7 +52,8 @@ export default {
     LineView,
     LineManagerView,
     TransferDialog,
-    RemarkDialog
+    RemarkDialog,
+    ExportDialog
   },
   data () {
     return {
@@ -61,7 +66,8 @@ export default {
       clearNumber: 20,
       mergeList: [],
       remark: null,
-      imgBase64: null
+      imgBase64: null,
+      exportVisible: false
     }
   },
   computed: {
@@ -91,13 +97,13 @@ export default {
       center: [120, 30]
     })
 
-    // // 测试代码
-    // setTimeout(() => {
-    //   this.addLine({
-    //     name: '杭州',
-    //     text: HANG_ZHOU
-    //   })
-    // }, 500);
+    // 测试代码
+    setTimeout(() => {
+      this.addLine({
+        name: '杭州',
+        text: HANG_ZHOU
+      })
+    }, 500);
 
   },
   methods: {
@@ -107,6 +113,9 @@ export default {
       // console.log(st)
       this.remark = st
       this.$refs.remarkDialog.show()
+    },
+    exportAll () {
+      this.exportVisible = !this.exportVisible
     },
     // 合并
     merge () {
@@ -153,9 +162,9 @@ export default {
       // console.log(list)
 
       let name = list.reduce((pre, sur) => {
-        let name = pre + ',' + sur.name
+        let name = pre + sur.name + ' '
         return name
-      }, '').substr(1);
+      }, '合: ');
 
       let mlist = list.reduce((pre, sur) => {
         return [...pre, ...sur.line]
@@ -201,16 +210,42 @@ export default {
         line: data.line.reverse()
       })
     },
+    exportLine (list) {
+      let data = this.lineList.map(lineObj => {
+        let cid = list.find(id => id == lineObj.id)
+        if (cid) {
+          return {
+            ...lineObj,
+            color: ACTIVE_COLOR,
+            lastPointColor: 'gold',
+            lastPointSize: 20
+          }
+
+        } else {
+          return {
+            ...lineObj,
+            color: 'blue',
+            lastPointColor: undefined,
+            lastPointSize: undefined
+          }
+        }
+      })
+      this.lineList = data
+    },
     lineMouseOut (data, index) {
       this.lineList.splice(index, 1, {
         ...data,
-        color: 'blue'
+        color: 'blue',
+        lastPointColor: undefined,
+        lastPointSize: undefined
       })
     },
     lineMouseOver (data, index) {
       this.lineList.splice(index, 1, {
         ...data,
-        color: 'orange'
+        color: ACTIVE_COLOR,
+        lastPointColor: 'gold',
+        lastPointSize: 20
       })
       //data.color = 'yellow'
     },

@@ -8,6 +8,9 @@
  * opt
  * color : String 线段默认颜色 '#fff'
  * pointSize : Number 点位大小 3
+ * pointColor : String 点位颜色 默认线段颜色
+ * lastPointColor : String 最后一个点的颜色 'red'
+ * lastPointSize : Number 最后一个点的大小,默认pointSize
  */
 export default class LineManager {
   constructor(map, opt) {
@@ -107,9 +110,9 @@ export default class LineManager {
 
       // 绘制最后一个点
       let pixel = pixels[pixels.length - 1] // 最后一个点
-      ctx.fillStyle = this._lastPointColor
+      ctx.fillStyle = lineObj.lastPointColor || this._lastPointColor
       ctx.beginPath()
-      ctx.arc(pixel.getX(), pixel.getY(), this._lastPointSize, 0, 2 * Math.PI)
+      ctx.arc(pixel.getX(), pixel.getY(), lineObj.lastPointSize || this._lastPointSize, 0, 2 * Math.PI)
       ctx.fill()
 
 

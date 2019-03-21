@@ -1,6 +1,10 @@
 <template>
   <div class="line-container" @mouseout="mouseout" @mouseover="mouseover">
-    <span class="name">{{name}} {{startPointName}}</span>
+    <!-- <span class="name">{{name}} {{startPointName}}</span> -->
+    <div style="width:180px;margin-right:5px;" class="input-container">
+      <el-input :value="name" @input="changeName"></el-input>
+    </div>
+
     <el-button type="success" size="mini" @click="reverse">反转</el-button>
     <el-button @click="remove" type="danger" icon="el-icon-delete" size="mini" circle></el-button>
     <el-button type="primary" size="mini" @click="copyLine">导出</el-button>
@@ -30,14 +34,17 @@ export default {
       }
       return null
     },
-    startPointName () {
-      if (this.startPoint) {
-        return `${this.startPoint[0].toFixed(3)},${this.startPoint[1].toFixed(3)}...`
-      }
-      return ''
-    }
+    // startPointName () {
+    //   if (this.startPoint) {
+    //     return `${this.startPoint[0].toFixed(3)},${this.startPoint[1].toFixed(3)}...`
+    //   }
+    //   return ''
+    // }
   },
   methods: {
+    changeName (val) {
+      this.$emit('input', val)
+    },
     remove () {
       this.$emit('remove')
     },
@@ -65,7 +72,7 @@ export default {
   justify-content: flex-start;
   align-items: center;
   margin-left: 10px;
-  margin-top: 10px;
+  margin-top: 15px;
   .name {
     // color: #fff;
 
