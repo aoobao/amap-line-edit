@@ -35,7 +35,7 @@
 
 <script>
 let __id = 0
-import HANG_ZHOU from '../assets/HANGZHOU'
+// import HANG_ZHOU from '../assets/HANGZHOU'
 import AddDialog from '@/components/AddDialog'
 import RemarkDialog from '@/components/RemarkDialog'
 import TransferDialog from '@/components/TransferDialog'
@@ -97,13 +97,13 @@ export default {
       center: [120, 30]
     })
 
-    // 测试代码
-    setTimeout(() => {
-      this.addLine({
-        name: '杭州',
-        text: HANG_ZHOU
-      })
-    }, 500);
+    // // 测试代码
+    // setTimeout(() => {
+    //   this.addLine({
+    //     name: '杭州',
+    //     text: HANG_ZHOU
+    //   })
+    // }, 500);
 
   },
   methods: {
