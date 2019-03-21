@@ -15,7 +15,7 @@
       </div>
       <div class="line-control">
         <template v-if="statusName == '查看'">
-          <LineView v-for="(line,index) in lineList" :key="line.id" :data="line" @remove="removeLine(index)" @reverse="reverseLine(line,index)" @mouseout="lineMouseOut(line,index)" @mouseover="lineMouseOver(line,index)" @copyLine="copyLine(line)" @input="e=>line.name = e" />
+          <LineView v-for="(line,index) in lineList" :key="line.id" :data="line" @remove="removeLine(index)" @reverse="reverseLine(line,index)" @mouseout="lineMouseOut(line,index)" @mouseover="lineMouseOver(line,index)" @copyLine="copyLine(line)" @input="e=>line.name = e" @lock="changeLock(line,index)" />
         </template>
         <template v-else-if="statusName == '擦除'">
           <div class="clear-container">
@@ -35,7 +35,8 @@
 
 <script>
 let __id = 0
-// import HANG_ZHOU from '../assets/HANGZHOU'
+import HANG_ZHOU from '../assets/HANGZHOU'
+import SHAO_XING from '../assets/SHAOXING'
 import AddDialog from '@/components/AddDialog'
 import RemarkDialog from '@/components/RemarkDialog'
 import TransferDialog from '@/components/TransferDialog'
@@ -98,12 +99,17 @@ export default {
     })
 
     // // 测试代码
-    // setTimeout(() => {
-    //   this.addLine({
-    //     name: '杭州',
-    //     text: HANG_ZHOU
-    //   })
-    // }, 500);
+    setTimeout(() => {
+      this.addLine({
+        name: '杭州',
+        text: HANG_ZHOU
+      })
+
+      this.addLine({
+        name: '绍兴',
+        text: SHAO_XING
+      })
+    }, 500);
 
   },
   methods: {
@@ -193,7 +199,8 @@ export default {
           line: t,
           id: ++__id,
           name: obj.name + num,
-          color: 'blue'
+          color: 'blue',
+          lock: false
         }
         if (num) num++;
         return o;
@@ -208,6 +215,12 @@ export default {
       this.lineList.splice(index, 1, {
         ...data,
         line: data.line.reverse()
+      })
+    },
+    changeLock (data, index) {
+      this.lineList.splice(index, 1, {
+        ...data,
+        lock: !data.lock
       })
     },
     exportLine (list) {

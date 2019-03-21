@@ -97,13 +97,13 @@ export default class LineManager {
       // ctx.closePath()
       ctx.stroke()
 
-      // 标记每个点位.
-      if (this._status != LineManager.VIEW) {
+      // 如果当前状态不是查看状态,并且该线段没有标记锁定, 标记出每个点位. 
+      if (this._status != LineManager.VIEW && !lineObj.lock) {
         ctx.fillStyle = lineObj.pointColor ? lineObj.pointColor : this._pointColor
         for (let i = 0; i < pixels.length; i++) {
           const pixel = pixels[i];
           ctx.beginPath()
-          ctx.arc(pixel.getX(), pixel.getY(), this._pointSize, 0, 2 * Math.PI)
+          ctx.arc(pixel.getX(), pixel.getY(), lineObj.pointSize || this._pointSize, 0, 2 * Math.PI)
           ctx.fill()
         }
       }
@@ -159,6 +159,7 @@ export default class LineManager {
     // console.log(pixel, clearWidth)
     let flag = false
     let lines = this._lines.map(lineObj => {
+      if (lineObj.lock) return lineObj
       let obj = this.filterPixels(lineObj, pixel, clearWidth)
       if (obj == null) {
         return lineObj
@@ -240,6 +241,17 @@ export default class LineManager {
     this._draw()
   }
 
+  /**
+   * 重新渲染数据
+   * @param {Array<Opt>} list 
+   * opt :
+   * color : String 线段默认颜色 '#fff'
+   * pointSize : Number 点位大小 3
+   * pointColor : String 点位颜色 默认线段颜色
+   * lastPointColor : String 最后一个点的颜色 'red'
+   * lastPointSize : Number 最后一个点的大小,默认pointSize
+   * lock : Bool  true代表不可擦除,编辑
+   */
   setData(list) {
     this._lines = list
 

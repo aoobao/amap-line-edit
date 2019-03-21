@@ -1,13 +1,15 @@
 <template>
   <div class="line-container" @mouseout="mouseout" @mouseover="mouseover">
     <!-- <span class="name">{{name}} {{startPointName}}</span> -->
-    <div style="width:180px;margin-right:5px;" class="input-container">
+    <div style="width:150px;margin-right:5px;" class="input-container">
       <el-input :value="name" @input="changeName"></el-input>
     </div>
 
     <el-button type="success" size="mini" @click="reverse">反转</el-button>
     <el-button @click="remove" type="danger" icon="el-icon-delete" size="mini" circle></el-button>
     <el-button type="primary" size="mini" @click="copyLine">导出</el-button>
+    <el-switch :value="data.lock" size="mini" style="margin-left:5px;" @input="changeLock"></el-switch>
+
   </div>
 </template>
 <script>
@@ -44,6 +46,9 @@ export default {
   methods: {
     changeName (val) {
       this.$emit('input', val)
+    },
+    changeLock () {
+      this.$emit('lock')
     },
     remove () {
       this.$emit('remove')
