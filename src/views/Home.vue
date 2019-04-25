@@ -3,15 +3,16 @@
     <div class="map-container" @mousemove="mapMouseMove" @mouseout="mapMouseOut">
       <div class="map" ref="map"></div>
       <LineManagerView v-if="map" :map="map" :data="lineList" ref="lineManager" :status="status" :x="x" :y="y" :clearWidth="clearNumber" />
+      <DrawLine :draw="isDrawLine" @createLine="createLine" />
     </div>
 
     <div class="control">
       <div class="button-control">
         <label>{{statusName}}</label>
-        <el-button style="margin-left:5px;" type="primary" @click="showAdd">新增</el-button>
-        <el-button style="margin-left:5px;" type="warning" @click="clearModel">{{statusName == '擦除' ? '取消擦除' : '擦除'}}</el-button>
-        <el-button style="margin-left:5px;" type="success" @click="merge">合并</el-button>
-        <el-button style="margin-left:5px;" @click="exportAll">{{exportVisible ? '关闭导出' : '批量导出'}}</el-button>
+        <el-button v-if="!exportVisible && !isDrawLine && statusName === '查看'"  style="margin-left:5px;" type="primary" @click="showAdd">新增</el-button>
+        <el-button v-if="!exportVisible && !isDrawLine"  style="margin-left:5px;" type="warning" @click="clearModel">{{statusName == '擦除' ? '取消擦除' : '擦除'}}</el-button>
+        <el-button v-if="!exportVisible && !isDrawLine && statusName === '查看'" style="margin-left:5px;" type="success" @click="merge">合并</el-button>
+        <el-button style="margin-left:5px;" @click="exportAll">{{exportVisible ? '关闭导出' : '导出'}}</el-button>
       </div>
       <div class="line-control">
         <template v-if="statusName == '查看'">
@@ -37,6 +38,7 @@
 let __id = 0
 // import HANG_ZHOU from '../assets/HANGZHOU'
 // import SHAO_XING from '../assets/SHAOXING'
+import DrawLine from '@/components/DrawLine'
 import AddDialog from '@/components/AddDialog'
 import RemarkDialog from '@/components/RemarkDialog'
 import TransferDialog from '@/components/TransferDialog'
@@ -54,7 +56,8 @@ export default {
     LineManagerView,
     TransferDialog,
     RemarkDialog,
-    ExportDialog
+    ExportDialog,
+    DrawLine
   },
   data () {
     return {
@@ -68,7 +71,8 @@ export default {
       mergeList: [],
       remark: null,
       imgBase64: null,
-      exportVisible: false
+      exportVisible: false,
+      isDrawLine: false
     }
   },
   computed: {
@@ -117,6 +121,9 @@ export default {
 
   },
   methods: {
+    createLine (line) {
+      console.log(line)
+    },
     copyLine (lineObj) {
       let line = lineObj.line
       let st = LineToString(line)

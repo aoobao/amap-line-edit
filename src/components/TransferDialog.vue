@@ -87,7 +87,7 @@ export default {
 <style lang="scss" scoped>
 .select-container {
   width: 50%;
-  height: 200px;
+  min-height: 200px;
   background-color: aqua;
   text-align: left;
   float: left;
