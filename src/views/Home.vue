@@ -98,6 +98,10 @@ export default {
       center: [120, 30]
     })
 
+    this.map.on('click', e => {
+      console.log(e.lnglat)
+    })
+
     // // // 测试代码
     // setTimeout(() => {
     //   this.addLine({

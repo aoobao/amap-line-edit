@@ -85,37 +85,38 @@ export default class LineManager {
     ctx.save()
     this._lines.forEach(lineObj => {
       let pixels = lineObj.pixels
-      // 线条颜色
-      ctx.strokeStyle = lineObj.color ? lineObj.color : this._color
-      ctx.lineWidth = 1
-      ctx.beginPath()
-      for (let i = 0; i < pixels.length; i++) {
-        let pixel = pixels[i];
-        ctx.lineTo(pixel.getX(), pixel.getY())
-      }
-
-      // ctx.closePath()
-      ctx.stroke()
-
-      // 如果当前状态不是查看状态,并且该线段没有标记锁定, 标记出每个点位. 
-      if (this._status != LineManager.VIEW && !lineObj.lock) {
-        ctx.fillStyle = lineObj.pointColor ? lineObj.pointColor : this._pointColor
+      // fix : 当线段全部被擦除的时候,pixels数组为空,跳过绘制 2019-4-25
+      if (pixels && pixels.length > 0) {
+        // 线条颜色
+        ctx.strokeStyle = lineObj.color ? lineObj.color : this._color
+        ctx.lineWidth = 1
+        ctx.beginPath()
         for (let i = 0; i < pixels.length; i++) {
-          const pixel = pixels[i];
-          ctx.beginPath()
-          ctx.arc(pixel.getX(), pixel.getY(), lineObj.pointSize || this._pointSize, 0, 2 * Math.PI)
-          ctx.fill()
+          let pixel = pixels[i];
+          ctx.lineTo(pixel.getX(), pixel.getY())
         }
+
+        // ctx.closePath()
+        ctx.stroke()
+
+        // 如果当前状态不是查看状态,并且该线段没有标记锁定, 标记出每个点位. 
+        if (this._status != LineManager.VIEW && !lineObj.lock) {
+          ctx.fillStyle = lineObj.pointColor ? lineObj.pointColor : this._pointColor
+          for (let i = 0; i < pixels.length; i++) {
+            const pixel = pixels[i];
+            ctx.beginPath()
+            ctx.arc(pixel.getX(), pixel.getY(), lineObj.pointSize || this._pointSize, 0, 2 * Math.PI)
+            ctx.fill()
+          }
+        }
+
+        // 绘制最后一个点
+        let pixel = pixels[pixels.length - 1] // 最后一个点
+        ctx.fillStyle = lineObj.lastPointColor || this._lastPointColor
+        ctx.beginPath()
+        ctx.arc(pixel.getX(), pixel.getY(), lineObj.lastPointSize || this._lastPointSize, 0, 2 * Math.PI)
+        ctx.fill()
       }
-
-      // 绘制最后一个点
-      let pixel = pixels[pixels.length - 1] // 最后一个点
-      ctx.fillStyle = lineObj.lastPointColor || this._lastPointColor
-      ctx.beginPath()
-      ctx.arc(pixel.getX(), pixel.getY(), lineObj.lastPointSize || this._lastPointSize, 0, 2 * Math.PI)
-      ctx.fill()
-
-
     });
 
     ctx.restore()
@@ -151,7 +152,7 @@ export default class LineManager {
       delete obj.pixels
       return obj
     })
-    return list
+    return list.filter(t => t.line && t.line.length > 0)
   }
 
   // 擦除
