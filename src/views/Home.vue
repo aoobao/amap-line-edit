@@ -3,16 +3,17 @@
     <div class="map-container" @mousemove="mapMouseMove" @mouseout="mapMouseOut">
       <div class="map" ref="map"></div>
       <LineManagerView v-if="map" :map="map" :data="lineList" ref="lineManager" :status="status" :x="x" :y="y" :clearWidth="clearNumber" />
-      <DrawLine :draw="isDrawLine" @createLine="createLine" />
+      <DrawLine v-if="map" :map="map" :draw="isDrawLine" @draw="createLine" />
     </div>
 
     <div class="control">
       <div class="button-control">
-        <label>{{statusName}}</label>
-        <el-button v-if="!exportVisible && !isDrawLine && statusName === '查看'"  style="margin-left:5px;" type="primary" @click="showAdd">新增</el-button>
-        <el-button v-if="!exportVisible && !isDrawLine"  style="margin-left:5px;" type="warning" @click="clearModel">{{statusName == '擦除' ? '取消擦除' : '擦除'}}</el-button>
+        <!-- <label>{{statusName}}</label> -->
+        <el-button v-if="!exportVisible && !isDrawLine && statusName === '查看'" style="margin-left:5px;" type="primary" @click="showAdd">新增</el-button>
+        <el-button v-if="!exportVisible && !isDrawLine" style="margin-left:5px;" type="warning" @click="clearModel">{{statusName == '擦除' ? '取消擦除' : '擦除'}}</el-button>
         <el-button v-if="!exportVisible && !isDrawLine && statusName === '查看'" style="margin-left:5px;" type="success" @click="merge">合并</el-button>
         <el-button style="margin-left:5px;" @click="exportAll">{{exportVisible ? '关闭导出' : '导出'}}</el-button>
+        <el-button v-if="!exportVisible && statusName === '查看'" @click="drawLine" style="margin-left:5px;">{{isDrawLine ? '关闭绘制' : '绘制线'}}</el-button>
       </div>
       <div class="line-control">
         <template v-if="statusName == '查看'">
@@ -72,7 +73,8 @@ export default {
       remark: null,
       imgBase64: null,
       exportVisible: false,
-      isDrawLine: false
+      isDrawLine: false,
+      drawIndex: 0
     }
   },
   computed: {
@@ -121,9 +123,7 @@ export default {
 
   },
   methods: {
-    createLine (line) {
-      console.log(line)
-    },
+
     copyLine (lineObj) {
       let line = lineObj.line
       let st = LineToString(line)
@@ -133,6 +133,9 @@ export default {
     },
     exportAll () {
       this.exportVisible = !this.exportVisible
+    },
+    drawLine () {
+      this.isDrawLine = !this.isDrawLine
     },
     // 合并
     merge () {
@@ -198,6 +201,19 @@ export default {
         return !m
       })]
 
+    },
+    createLine (line) {
+      // console.log(line)
+      this.drawIndex++
+      let name = '自定义线段' + this.drawIndex
+      let o = {
+        line: line,
+        id: ++__id,
+        name: name,
+        color: 'blue',
+        lock: false
+      }
+      this.lineList.unshift(o)
     },
     addLine (obj) {
       // console.log(str)
@@ -324,7 +340,7 @@ export default {
     .line-control {
       width: 100%;
       height: 100%;
-      background-color: aqua;
+      // background-color: aqua;
       overflow-y: auto;
       // display: flex;
       // flex-flow: row wrap;

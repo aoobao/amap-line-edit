@@ -1,8 +1,8 @@
 <template>
   <div class="line-container" @mouseout="mouseout" @mouseover="mouseover">
     <!-- <span class="name">{{name}} {{startPointName}}</span> -->
-    <div style="width:150px;margin-right:5px;" class="input-container">
-      <el-input :value="name" @input="changeName"></el-input>
+    <div style="width:150px;margin-right:5px;margin-left:5px;" class="input-container">
+      <el-input size="mini" :value="name" @input="changeName"></el-input>
     </div>
 
     <el-button type="success" size="mini" @click="reverse">反转</el-button>
@@ -72,12 +72,15 @@ export default {
 <style lang="scss" scoped>
 .line-container {
   width: 400px;
-  height: 30px;
+  height: 40px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  margin-left: 10px;
-  margin-top: 15px;
+  // margin-left: 10px;
+  margin-top: 10px;
+  &:hover {
+    background-color: aquamarine;
+  }
   .name {
     // color: #fff;
 
