@@ -68,7 +68,7 @@ export default {
       x: -1000,
       y: -1000,
       clearNumberList: [10, 15, 20, 30, 40, 50],
-      clearNumber: 20,
+      clearNumber: 40,
       mergeList: [],
       remark: null,
       imgBase64: null,
@@ -353,7 +353,8 @@ export default {
         .clear-block {
           float: left;
           margin-left: 10px;
-          background-color: #fff;
+          // background-color: #fff;
+          background-color: aqua;
           &.active {
             border: 1px solid red;
           }
