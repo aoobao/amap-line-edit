@@ -38,7 +38,7 @@ export default class MouseTool {
     if (this._mouseTool) {
 
       this._mouseTool.close()
-      this._mouseTool.setMap(null)
+      // this._mouseTool.setMap(null)
       this._mouseTool = null
     }
   }
