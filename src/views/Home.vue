@@ -307,6 +307,21 @@ export default {
         height: width + 'px'
       }
     }
+  },
+  watch: {
+    exportVisible (val) {
+      if (!val) {
+        let list = this.lineList.map(lineObj => {
+          return {
+            ...lineObj,
+            color: 'blue',
+            lastPointColor: undefined,
+            lastPointSize: undefined
+          }
+        });
+        this.lineList = list
+      }
+    }
   }
 }
 </script>

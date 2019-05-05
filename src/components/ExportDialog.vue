@@ -29,6 +29,9 @@ export default {
       return list
     }
   },
+  mounted () {
+
+  },
   methods: {
     handleCheckedCitiesChange () {
       // console.log(val)
@@ -44,6 +47,14 @@ export default {
       }
       this.text = sb
       this.$emit('exportLine', list.map(t => t.id))
+    }
+  },
+  watch: {
+    visible (val) {
+      if (val) {
+        this.checkList = this.lineList.map(t => t.id)
+        this.handleCheckedCitiesChange()
+      }
     }
   }
 }
