@@ -1,3 +1,3 @@
 module.exports = {
-  publicPath: '/amap-line-edit/',
+  publicPath: '/line-painter/',
 }
